@@ -20,6 +20,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Setup BASE URL File
+        run: echo "${{ secrets.BASE_URL_FILE }}" | base64 --decode > lib/core/api/api.dart
       
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
