@@ -50,9 +50,15 @@ jobs:
           cd ios
           pod install --repo-update
           cd ..
-          
+
       - name: Build APK
         run: flutter build apk --release
 
       - name: Build iOS
         run: flutter build ios --debug --build-name=1.0.0 --build-number=1 --no-codesign
+
+      - name: Upload APK
+        uses: action/upload-artifact@v4
+        with:
+          name: android-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
