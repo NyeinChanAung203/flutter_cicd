@@ -1,0 +1,37 @@
+name: Flutter - IOS Build Dev
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup BASE URL File
+        run: echo "${{ secrets.BASE_URL_FILE }}" | base64 --decode > lib/core/api/api.dart
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.29.1
+      
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Install iOS dependencies
+        run: |
+          cd ios
+          pod install --repo-update
+          cd ..
+      
+      - name: Build iOS
+        run: flutter build ios --debug --build-name=1.0.0 --build-number=1 --no-codesign
