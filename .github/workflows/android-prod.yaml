@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write  # Needed to push commits and tags
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -64,3 +68,20 @@ jobs:
         with:
           name: android-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
+            - name: Extract version from pubspec.yaml
+        id: get_version
+        run: |
+          VERSION=$(grep "^version:" pubspec.yaml | awk '{print $2}' | cut -d+ -f1)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Tagging version v$VERSION"
+
+      - name: Create Git tag
+        run: |
+          git config user.name "NyeinChanAung203"
+          git config user.email "nca05531@gmail.com"
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
