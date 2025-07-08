@@ -46,5 +46,5 @@ jobs:
         run: flutter analyze --fatal-warnings
       
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --debug
 

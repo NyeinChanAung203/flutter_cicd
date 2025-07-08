@@ -52,7 +52,7 @@ jobs:
           cd ..
 
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --debug
 
       - name: Build iOS
         run: flutter build ios --debug --build-name=1.0.0 --build-number=1 --no-codesign
