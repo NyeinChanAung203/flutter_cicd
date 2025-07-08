@@ -1,0 +1,71 @@
+name: Flutter - Android & IOS Build Dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Select your branch'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - main
+          - qa
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup BASE URL File
+        run: echo "${{ secrets.BASE_URL_FILE }}" | base64 --decode > lib/core/api/api.dart
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.29.1
+      
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Auto format the dart code
+        run: dart format .
+
+      - name: Verify the dart code is formatted
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Run test
+        run: flutter test
+
+      - name: Analyze the dart code
+        run: flutter analyze --fatal-warnings
+
+      - name: Install iOS dependencies
+        run: |
+          cd ios
+          pod install --repo-update
+          cd ..
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build iOS
+        run: flutter build ios --debug --build-name=1.0.0 --build-number=1 --no-codesign
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
