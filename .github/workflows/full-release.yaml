@@ -56,19 +56,19 @@ jobs:
           echo "BUILD=$NEW_BUILD" >> $GITHUB_ENV
 
       # 📜 Generate Changelog
-      - name: Generate changelog
-        id: changelog
-        run: |
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ -z "$LAST_TAG" ]; then
-            git log --pretty=format:"- %s" > changelog.txt
-          else
-            git log "$LAST_TAG"..HEAD --pretty=format:"- %s" > changelog.txt
-          fi
+      # - name: Generate changelog
+      #   id: changelog
+      #   run: |
+      #     LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+      #     if [ -z "$LAST_TAG" ]; then
+      #       git log --pretty=format:"- %s" > changelog.txt
+      #     else
+      #       git log "$LAST_TAG"..HEAD --pretty=format:"- %s" > changelog.txt
+      #     fi
 
-          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
-          cat changelog.txt >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+      #     echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+      #     cat changelog.txt >> $GITHUB_ENV
+      #     echo "EOF" >> $GITHUB_ENV
 
       # 📝 Commit updated pubspec.yaml
       - name: Commit version bump
