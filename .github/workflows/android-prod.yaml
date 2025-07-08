@@ -69,7 +69,7 @@ jobs:
           name: android-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
-            - name: Extract version from pubspec.yaml
+      - name: Extract version from pubspec.yaml
         id: get_version
         run: |
           VERSION=$(grep "^version:" pubspec.yaml | awk '{print $2}' | cut -d+ -f1)
